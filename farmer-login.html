@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmer Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    input {
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    p {
+      text-align: center;
+      margin-top: 10px;
+    }
+    a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Farmer Login</h1>
+    <div class="card">
+      <label for="phone">Phone Number</label>
+      <input id="phone" type="text" placeholder="Enter phone number" />
+      <button id="login">Login</button>
+      <p><a href="index.html">Back to Login</a></p>
+    </div>
+  </div>
+
+<script>
+const API = 'http://localhost:4000/api';
+
+document.getElementById('login').addEventListener('click', async () => {
+  const phone = document.getElementById('phone').value.trim();
+  if (!phone) return alert('Please enter your phone number');
+
+  try {
+    const res = await fetch(`${API}/auth/farmer/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone })
+    });
+    const data = await res.json();
+    if (data.farmer) {
+      localStorage.setItem('farmerId', data.farmer._id);
+      location.href = 'farmer.html';
+    } else {
+      alert('Farmer not found');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('An error occurred while logging in');
+  }
+});
+</script>
+</body>
+</html>

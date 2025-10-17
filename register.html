@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farmer Register - Ramana Tractor</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+
+    input {
+      display: block;
+      width: 80%;
+      padding: 10px;
+      margin: 10px auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px auto;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      display: block;
+      width: 80%;
+      transition: background 0.3s ease;
+    }
+
+    #register {
+      background-color: #28a745;
+      color: white;
+    }
+    #register:hover {
+      background-color: #1e7e34;
+    }
+
+    #backToLogin {
+      background-color: #007bff;
+      color: white;
+    }
+    #backToLogin:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <main class="container" role="main">
+    <h1>Register as Farmer</h1>
+    <div class="card" role="form" aria-label="Farmer registration form">
+      <label for="name" class="hidden">Full Name</label>
+      <input id="name" name="name" placeholder="Full Name" aria-label="Full Name" required />
+
+      <label for="phone" class="hidden">Phone Number</label>
+      <input id="phone" name="phone" placeholder="Phone" aria-label="Phone" required />
+
+      <button id="register">Register</button>
+      <button id="backToLogin">Back to Login</button>
+    </div>
+  </main>
+
+  <script>
+    const API = 'http://localhost:4000/api';
+
+    document.getElementById('register').addEventListener('click', async () => {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!name || !phone) {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      try {
+        const res = await fetch(API + '/admin/farmers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone })
+        });
+
+        const data = await res.json();
+
+        if (data._id) {
+          alert('Registered successfully. Save your phone number to login.');
+          location.href = 'farmer-login.html';
+        } else {
+          alert(data.error || 'Register failed');
+        }
+      } catch (err) {
+        alert('Server error. Please try again later.');
+        console.error(err);
+      }
+    });
+
+    document.getElementById('backToLogin').addEventListener('click', () => {
+      location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

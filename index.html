@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ramana Tractor Service - Login</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    input {
+      display: block;
+      width: 80%;
+      padding: 10px;
+      margin: 10px auto;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px auto;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      display: block;
+      width: 80%;
+      transition: background 0.3s ease;
+    }
+
+    #showAdminForm {
+      background-color: #007bff;
+      color: white;
+    }
+    #showAdminForm:hover {
+      background-color: #0056b3;
+    }
+
+    #adminLogin {
+      background-color: #28a745;
+      color: white;
+    }
+    #adminLogin:hover {
+      background-color: #1e7e34;
+    }
+
+    #farmerRegisterBtn {
+      background-color: #ffc107;
+      color: black;
+    }
+    #farmerRegisterBtn:hover {
+      background-color: #e0a800;
+    }
+
+    .btn-group button:last-child {
+      background-color: #17a2b8;
+      color: white;
+    }
+    .btn-group button:last-child:hover {
+      background-color: #117a8b;
+    }
+
+    .btn-group {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" role="main">
+    <h1>Tractor Tracker</h1>
+    <div class="card" aria-label="Login card">
+      <h2>Login</h2>
+
+      <!-- Admin Section -->
+      <section id="adminSection" aria-labelledby="admin-login-heading">
+        <button id="showAdminForm">Admin Login</button>
+
+        <div id="adminForm" class="hidden" role="form" aria-label="Admin Login Form">
+          <input id="adminUser" name="adminUser" placeholder="Username" aria-label="Admin username" />
+          <input id="adminPass" name="adminPass" placeholder="Password" type="password" aria-label="Admin password" />
+          <button id="adminLogin">Submit</button>
+        </div>
+      </section>
+
+      <!-- Farmer Buttons -->
+      <div class="btn-group" role="group" aria-label="Farmer actions">
+        <button id="farmerRegisterBtn">Farmer Register</button>
+        <button onclick="location.href='farmer-login.html'">Farmer Login</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:4000/api';
+
+    // Show admin login form
+    document.getElementById('showAdminForm').addEventListener('click', () => {
+      document.getElementById('adminForm').classList.remove('hidden');
+      document.getElementById('showAdminForm').classList.add('hidden');
+    });
+
+    // Admin login
+    document.getElementById('adminLogin').addEventListener('click', async () => {
+      const username = document.getElementById('adminUser').value.trim();
+      const password = document.getElementById('adminPass').value.trim();
+
+      if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+      }
+
+      try {
+        const res = await fetch(API + '/auth/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (data.token) {
+          localStorage.setItem('adminToken', data.token);
+          location.href = 'admin.html';
+        } else {
+          alert(data.error || 'Login failed');
+        }
+      } catch (error) {
+        alert('Server not reachable. Please try again later.');
+      }
+    });
+
+    // Farmer Register
+    document.getElementById('farmerRegisterBtn').addEventListener('click', () => {
+      location.href = 'register.html';
+    });
+  </script>
+</body>
+</html>
